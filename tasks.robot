@@ -49,8 +49,13 @@ Fill and Order
         Input Text    xpath://*[@id="root"]/div/div[1]/div/div[1]/form/div[3]/input    ${order}[Legs]
         Input Text    xpath://*[@id="root"]/div/div[1]/div/div[1]/form/div[4]/input    ${order}[Address]
         Click Element When Visible  id:preview
-        Wait Until Keyword Succeeds    30 sec   1 sec    Click Element When Visible      id:order
-        ${receipt_html}=   Wait Until Keyword Succeeds    30 sec   1 sec    Get Element Attribute    id:receipt    outerHTML
+        FOR     ${i}    IN RANGE    100
+            Click Element When Visible      id:order
+            Sleep   2s
+            ${check}=         Is Element Visible      id:receipt
+            Exit For Loop If        ${check}
+        END
+        ${receipt_html}=    Get Element Attribute    id:receipt    outerHTML
         Html To Pdf    ${receipt_html}    ${download_dir}${/}receipt_${order}[Order number]${receipt_name.robotName}.pdf
         Screenshot    id:robot-preview-image    ${download_dir}${/}robot${order}[Order number].png
         Open Pdf    ${download_dir}${/}receipt_${order}[Order number]${receipt_name.robotName}.pdf
